@@ -8,7 +8,10 @@ class Word {
   int difficulty, attempts;
   vector<int> guesses;
 public:
-  Word(string d = "", string w = "", int df = 1, int a = 0, vector<int> g = {})
-    : dictionary(d), word(w), difficulty(df), attempts(a), guesses(g) {}
+  Word(string d = "", int df = 1, int a = 0, string w = "", vector<int> g = {})
+    : dictionary(d), difficulty(df), attempts(a), word(w), guesses(g) {}
+  void draw() { // do this
 
+    cout << string(26, ' ') << "_ _ _ f _ _";
+  }
 };

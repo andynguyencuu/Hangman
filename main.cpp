@@ -18,43 +18,44 @@ void blankGame(/* add objects and vars)*/) {}
 void saveGame(/* get important variables and stuff from objects*/);
 
 int main() {
-  //        _____ Game attributes _____
+  //        _____ File attributes _____
   string dictionary = "dict.txt", path = "stages/", gallowF = "hang.txt", gallowEndF = "hung.txt"; //file locations
-  int dictLength = 10001, artHeight = 28, lives = 9;
+  int dictLength = 10001, artHeight = 28;
 
   //        ____ Player attributes ____
   string name = "";
-  int difficulty, guesses = 0;
+  int difficulty, guesses = 0, lives = 9;
 
   while (1) { //repeats until player quits
     int gameState = mainMenu(path, 24, name, difficulty);
-  // if (gameState == 2) { // load game
-    // ifstream data(name+".txt");
-    // initialize holder variables
-    // data >> holder variables;
-    // initialize objects with variables
-// }
+    if (gameState == 3) break;
+    if (gameState == 2) { // load game
+      // ifstream data(name+".txt");
+      // initialize holder variables
+      // data >> holder variables;
 
-//   if (gameState == 1) { // new game
-//     initialize defult objects that are right underneath
-//   }
+  }
+
   Hang gallow(path, artHeight, gallowF, gallowEndF, lives);
   Man man(path, artHeight, lives);
+  Word w(dictionary, difficulty);
   Art *g = &gallow; //polymorphism! +5 points b
   Art *m = &man;
 
 
   lives--;
   guesses = 0;
-  string guess;
+string guess;
 while (1) {
     cls();
     for (int i = 0; i < artHeight; i++) { // put objs in array and simplify it to 1 call
-
       g->draw(i, guesses);
       m->draw(i, guesses);
-      if (i == 23) { cout << "    Lives left: " << lives - guesses; }
-      if (i == 1) { cout << name; }
+      if (i == 1) cout << name;
+      if (i == 21) cout << string(26, ' ') << "_ _ _ f _ _ "; // w->draw();
+      if (i == 22) cout << string(26, ' ') << "      ^    "; // w->where();
+      if (i == 24) cout << "    Lives left: " << lives - guesses;
+
       cout << endl;
     }
     if (guesses == lives) break; // so we can render the death
@@ -65,17 +66,15 @@ while (1) {
 
 
   if (guesses == lives) {
-    cout << "                     "  << name << "'s neck gave out.\n";
+    cout << string(21, ' ')  << name << "'s neck gave out.\n";
+    pause(); pause();
   }
-  system("pause");
 }
   return 0;
 }
 
-
 int mainMenu(string path, int height, string &name, int &difficulty) {
   cls();
-  pause();
   if (CLEAR == "cls") { system("color cf"); }
   ifstream menu(path+"menu.txt");
   int choice;
@@ -99,7 +98,7 @@ int mainMenu(string path, int height, string &name, int &difficulty) {
       cin >> name;
       break;
     case 3:
-      system("exit");
+      break;
     default:
       cout << "\n              What's your name? : ";
       cin >> name;
