@@ -75,6 +75,7 @@ while (1) {
 
 int mainMenu(string path, int height, string &name, int &difficulty) {
   cls();
+  pause();
   if (CLEAR == "cls") { system("color cf"); }
   ifstream menu(path+"menu.txt");
   int choice;
