@@ -20,7 +20,7 @@ void saveGame(/* get important variables and stuff from objects*/);
 int main() {
   //        _____ File attributes _____
   string dictionary = "dict.txt", path = "stages/", gallowF = "hang.txt", gallowEndF = "hung.txt"; //file locations
-  int dictLength = 10001, artHeight = 28;
+  int artHeight = 28;
 
   //        ____ Player attributes ____
   string name = "";
@@ -42,7 +42,8 @@ int main() {
   Art *g = &gallow; //polymorphism! +5 points b
   Art *m = &man;
 
-
+// array(w.chooseWord()).getlength<=5
+system("pause");
   lives--;
   guesses = 0;
 string guess;
