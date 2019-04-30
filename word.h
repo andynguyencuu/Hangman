@@ -39,7 +39,7 @@ public:
       }
     }
   }
-
+  
   void chooseWord() {
     srand((unsigned)time(0));
     int lowest = 1, highest = 10001;
