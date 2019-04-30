@@ -27,7 +27,6 @@ int main() {
   string name = "", word = "", guessed = "";
   int difficulty, guesses = 0, lives = 9;
 
-  // while (1) { //repeats until player quits
     int gameState = mainMenu(path, 25, name, difficulty);
     if (gameState == 3) return 0;
     if (gameState == 2) { // load game
@@ -40,7 +39,7 @@ int main() {
   Hang gallow(path, artHeight, gallowF, gallowEndF, lives);
   Man man(path, artHeight, lives);
   Word w(dictionary, difficulty, word, guessed);
-  Art *g = &gallow; //polymorphism! +5 points b
+  Art *g = &gallow;
   Art *m = &man;
 
 
@@ -49,7 +48,7 @@ lives--;
 string guess;
 while (1) {
     cls();
-    cout << w.getWord();
+    // cout << w.getWord();
     for (int i = 0; i < artHeight; i++) {
       g->draw(i, guesses);
       m->draw(i, guesses);
@@ -74,7 +73,6 @@ while (1) {
         cout << endl;
       }
       win.close();
-
       pause();
       break;
     }
@@ -86,7 +84,6 @@ while (1) {
       guesses++;
     }
   }
-
 
   if (guesses == lives) {
     cout << string(21, ' ')  << name << "'s neck gave out.\n\n";
