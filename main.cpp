@@ -21,6 +21,7 @@ int main() {
   //        _____ File attributes _____
   string dictionary = "dict.txt", path = "stages/", gallowF = "hang.txt", gallowEndF = "hung.txt"; //file locations
   int artHeight = 28;
+  int poopoomagoo;
 
   //        ____ Player attributes ____
   string name = "";
@@ -36,13 +37,16 @@ int main() {
 
   }
 
+
+
   Hang gallow(path, artHeight, gallowF, gallowEndF, lives);
   Man man(path, artHeight, lives);
   Word w(dictionary, difficulty);
   Art *g = &gallow; //polymorphism! +5 points b
   Art *m = &man;
 
-// array(w.chooseWord()).getlength<=5
+
+
 system("pause");
   lives--;
   guesses = 0;
@@ -52,17 +56,23 @@ while (1) {
     for (int i = 0; i < artHeight; i++) { // put objs in array and simplify it to 1 call
       g->draw(i, guesses);
       m->draw(i, guesses);
+      w.draw(i, guess);
       if (i == 1) cout << name;
-      if (i == 21) cout << string(26, ' ') << "_ _ _ f _ _ "; // w->draw();
-      if (i == 22) cout << string(26, ' ') << "      ^    "; // w->where();
       if (i == 24) cout << "    Lives left: " << lives - guesses;
-
       cout << endl;
     }
     if (guesses == lives) break; // so we can render the death
-    cout << "Guess anything to hang yourself further: ";
+    cout << "Enter your guess (lowercase): ";
     cin >> guess;
-    guesses++;
+    poopoomagoo=w.update(guess);
+    if (poopoomagoo == 3) {
+      cout << "you won!";
+      break;
+    }
+    else if(poopoomagoo!=1)
+    {
+      guesses++;
+    }
   }
 
 
