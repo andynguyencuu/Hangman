@@ -15,7 +15,7 @@ void cls() { system(CLEAR); }
 void pause();
 int mainMenu(string path, int height, string &name, int &difficulty); // print the menu & options, prompt player to load or new game
 void blankGame(/* add objects and vars)*/) {}
-void saveGame(/* get important variables and stuff from objects*/);
+void saveGame(string name, int difficulty, int guesses, string word, string guessed);
 
 int main() {
   //        _____ File attributes _____
@@ -24,36 +24,33 @@ int main() {
   int poopoomagoo;
 
   //        ____ Player attributes ____
-  string name = "";
+  string name = "", word = "", guessed = "";
   int difficulty, guesses = 0, lives = 9;
 
-  while (1) { //repeats until player quits
-    int gameState = mainMenu(path, 24, name, difficulty);
-    if (gameState == 3) break;
+  // while (1) { //repeats until player quits
+    int gameState = mainMenu(path, 25, name, difficulty);
+    if (gameState == 3) return 0;
     if (gameState == 2) { // load game
-      // ifstream data(name+".txt");
-      // initialize holder variables
-      // data >> holder variables;
-
+      ifstream data(name+".txt");
+      data >> difficulty >> guesses >> word >> guessed;
   }
 
 
 
   Hang gallow(path, artHeight, gallowF, gallowEndF, lives);
   Man man(path, artHeight, lives);
-  Word w(dictionary, difficulty);
+  Word w(dictionary, difficulty, word, guessed);
   Art *g = &gallow; //polymorphism! +5 points b
   Art *m = &man;
 
 
 
-system("pause");
-  lives--;
-  guesses = 0;
+lives--;
 string guess;
 while (1) {
     cls();
-    for (int i = 0; i < artHeight; i++) { // put objs in array and simplify it to 1 call
+    cout << w.getWord();
+    for (int i = 0; i < artHeight; i++) {
       g->draw(i, guesses);
       m->draw(i, guesses);
       w.draw(i, guess);
@@ -65,9 +62,24 @@ while (1) {
     cout << "Enter your guess (lowercase): ";
     cin >> guess;
     poopoomagoo=w.update(guess);
-    if (poopoomagoo == 3) {
-      cout << "you won!";
+    if (poopoomagoo == 3) { // win condition
+      ifstream win(path+"win.txt");
+      string winArt[23];
+      cls();
+      for (int i = 0; i < 23; i++) {
+        getline(win, winArt[i]);
+        cout << winArt[i];
+        if (i == 8) cout << " " << name << "!" << string(19 - name.length(), ' ') << "\\ \\";
+        if (i == 22) cout << " " << w.getWord() << ".\n\n";
+        cout << endl;
+      }
+      win.close();
+
+      pause();
       break;
+    }
+    else if (poopoomagoo == 4) {
+      saveGame(name, difficulty, guesses, w.getWord(), w.getGuessed());
     }
     else if(poopoomagoo!=1)
     {
@@ -77,10 +89,12 @@ while (1) {
 
 
   if (guesses == lives) {
-    cout << string(21, ' ')  << name << "'s neck gave out.\n";
-    pause(); pause();
+    cout << string(21, ' ')  << name << "'s neck gave out.\n\n";
+    pause();
+    cout << string(21, ' ') << "The word was " << w.getWord() << ".";
+    pause();
   }
-}
+// }
   return 0;
 }
 
@@ -121,11 +135,13 @@ int mainMenu(string path, int height, string &name, int &difficulty) {
   cls();
   return choice;
 }
-void saveGame(/* get important variables and stuff from objects*/) {
+
+void saveGame(string name, int difficulty, int guesses, string word, string guessed) {
   cls();
-  //ofstream data(name+".txt");
-  //data << variable << \n
-  //save the stuff
+  ofstream data(name+".txt");
+  data << difficulty << "\n" << guesses << "\n" << word << "\n" << guessed << "\n";
+  data.close();
+  cout << "\n\n\n" << string(15, ' ') << name << "'s game was saved!";
   pause();
   cls();
 }

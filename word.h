@@ -11,12 +11,15 @@ class Word {
   int difficulty, change;
 
 public:
-  Word(string d = "", int df = 1, int a = 0, string w = "")
-    : dictionary(d), difficulty(df), word(w){
-      chooseWord();
-      guessed = string(word.length(), '_');
-      // cout << guessed
+  Word(string d = "", int df = 1, string w = "", string g = "")
+    : dictionary(d), difficulty(df), word(w), guessed(g) {
+      if (word == "") {
+        chooseWord();
+        guessed = string(word.length(), '_');
     }
+  }
+  string getWord() { return word; }
+  string getGuessed() { return guessed; }
   void draw(int i, string guess) { // do this
     int pus=word.find(guess);
     if (i == 21)
@@ -77,14 +80,15 @@ public:
         word=words[random];
         break;
       default:
-        cout<<"Not an option moron";
+        cout << "Not an option...\nEasy mode it is!";
+
       break;
     }
-    cout<<word;
   }
 
   int update(string guess) {
     change=0;
+    if (guess == "!") { return 4; }
     if(guess.length()>1 && guess !=word) { return 2; }
     for (int i = 0; i < word.length(); i++){
       if(word[i] == guess[0]) {
@@ -98,4 +102,6 @@ public:
     }
     return change;
   }
+
+
 };
