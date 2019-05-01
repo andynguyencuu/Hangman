@@ -14,7 +14,7 @@
                                 |            |
                                 |   hungman  |
                                 |   _        <
-                                |__/         | Cause of death:
+                                |__/         |   Cause of death:
                                  / `--.      |
                                %|            |%
                            |/.%%|          -< @%%%
