@@ -4,11 +4,13 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include<algorithm>
 using namespace std;
 
 class Word {
   string dictionary, word, guessed, words[10001];
   int difficulty, change;
+  vector<string> guesses;
 
 public:
   Word(string d = "", int df = 1, string w = "", string g = "")
@@ -20,7 +22,8 @@ public:
   }
   string getWord() { return word; }
   string getGuessed() { return guessed; }
-  void draw(int i, string guess) { // do this
+
+  void draw(int i, string guess) {
     int pus = word.find(guess);
     if (i == 21) {
       cout << string(26, ' ');
@@ -39,39 +42,36 @@ public:
       }
     }
   }
-  
+
+  void ran(int& num) { num = 1 + int(10001 * rand() / (RAND_MAX + 1.0));}
+
   void chooseWord() {
     srand((unsigned)time(0));
-    int lowest = 1, highest = 10001;
-    int range = (highest - lowest) + 1;
-
+    int random;
     ifstream dict(dictionary);
     for (int i = 0; i < 10001; i++) {
       getline(dict, words[i]);
     }
 
-    int random = lowest + int(range * rand() / (RAND_MAX + 1.0));
+    ran(random);
     switch (difficulty) {
     case 1:
       while (!(words[random].length() <= 5)) {
-        random = lowest + int(range * rand() / (RAND_MAX + 1.0));
+        ran(random);
       }
       word = words[random];
       break;
     case 2:
       while (!((words[random].length() > 5) && (words[random].length() < 8))) {
-        random = lowest + int(range * rand() / (RAND_MAX + 1.0));
+        ran(random);
       }
       word = words[random];
       break;
     case 3:
       while (!(words[random].length() > 8)) {
-        random = lowest + int(range * rand() / (RAND_MAX + 1.0));
+        ran(random);
       }
       word = words[random];
-      break;
-    default:
-      cout << "Not an option...\nEasy mode it is!";
       break;
     }
   }
@@ -79,20 +79,34 @@ public:
   int update(string guess) {
     change = 0;
     if (guess == "!") {
-      return 4;
+      return 4; //save
     }
+    if ((find(guesses.begin(), guesses.end(), guess) != guesses.end())) {
+      return 5; //already guessed
+    }
+    guesses.push_back(guess);
     if (guess.length() > 1 && guess != word) {
-      return 2;
+      return 2; //incorrect word guess
     }
     for (int i = 0; i < word.length(); i++) {
       if (word[i] == guess[0]) {
         guessed[i] = word[i];
-        change = 1;
+        change = 1; //correct guess
       }
     }
     if ((guessed == word) || (guess == word)) {
-      return 3;
+      return 3; //correct word guess or word completed
     }
-    return change;
+    if ((guessed == word) || (guess == word)) {
+      return 3; //correct word guess or word completed
+    }
+    for (int i = 0; i < word.length(); i++) {
+      if (word[i] == guess[0]) {
+        guessed[i] = word[i];
+        change = 1; //correct guess
+      }
+    }
+    return change; //incorrect guess
   }
+  int getChange() { return change; }
 };
