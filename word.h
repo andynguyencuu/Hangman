@@ -1,3 +1,4 @@
+#pragma once
 #include <ctime>
 #include <fstream>
 #include <iostream>
@@ -9,7 +10,7 @@ using namespace std;
 class Word {
   string dictionary, word, guessed, words[10001];
   int difficulty, change;
-  vector<string> guesses;
+  vector<string> history;
 
 public:
   Word(string d = "", int df = 1, string w = "", string g = "")
@@ -80,10 +81,10 @@ public:
     if (guess == "!") {
       return 4; //save
     }
-    if ((find(guesses.begin(), guesses.end(), guess) != guesses.end())) {
+    if ((find(history.begin(), history.end(), guess) != history.end())) {
       return 5; //already guessed
     }
-    guesses.push_back(guess);
+    history.push_back(guess);
     if (guess.length() > 1 && guess != word) {
       return 2; //incorrect word guess
     }
@@ -108,4 +109,6 @@ public:
     return change; //incorrect guess
   }
   int getChange() { return change; }
+
+  //needs destructor
 };
