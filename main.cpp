@@ -1,6 +1,7 @@
 #include<iostream>
 #include<string>
 #include<fstream>
+#include<ctime>
 
 #include"man.h"
 #include"word.h"
@@ -13,8 +14,9 @@ using namespace std;
 
 void cls() { system(CLEAR); }
 void pause();
-int mainMenu(string path, int height, string &name, int &difficulty); // print the menu & options, prompt player to load or new game
-void blankGame(/* add objects and vars)*/) {}
+int mainMenu(string path, int height, string &name, int &difficulty);
+void die(string name, string word, string path);
+void win(string name, string word, string path);
 void saveGame(string name, int difficulty, int guesses, string word, string guessed);
 
 int main() {
@@ -23,74 +25,69 @@ int main() {
   int artHeight = 28;
   int poopoomagoo;
 
+//while(1) {
   //        ____ Player attributes ____
   string name = "", word = "", guessed = "";
   int difficulty, guesses = 0, lives = 9;
 
-    int gameState = mainMenu(path, 25, name, difficulty);
-    if (gameState == 3) return 0;
-    if (gameState == 2) { // load game
-      ifstream data(name+".txt");
-      data >> difficulty >> guesses >> word >> guessed;
+  int gameState = mainMenu(path, 25, name, difficulty);
+  if (gameState == 3) return 0;
+  if (gameState == 2) { // load game
+    ifstream data(name+".txt");
+    data >> difficulty >> guesses >> word >> guessed; //welcome back screen?
   }
 
-
-
-  Hang gallow(path, artHeight, gallowF, gallowEndF, lives);
-  Man man(path, artHeight, lives);
-  Word w(dictionary, difficulty, word, guessed);
-  Art *g = &gallow;
-  Art *m = &man;
-
+  Art *g = new Hang(path,artHeight, gallowF, gallowEndF, lives);
+  Art *m = new Man(path, artHeight, lives);
+  Word *w = new Word(dictionary, difficulty, word, guessed);
 
 
 lives--;
 string guess;
 while (1) {
     cls();
-    // cout << w.getWord();
+    // cout << w->getWord();
     for (int i = 0; i < artHeight; i++) {
       g->draw(i, guesses);
       m->draw(i, guesses);
-      w.draw(i, guess);
+      w->draw(i, guess);
       if (i == 1) cout << name;
-      if (i == 24) cout << "    Lives left: " << lives - guesses;
+      if (i == 23 && poopoomagoo == 5) cout << "    " << guess << " already guessed!";
+      if (i == 25) cout << "    Lives left: " << lives - guesses;
+      if (i == 27) cout << "    ! to save and quit";
       cout << endl;
     }
-    if (guesses == lives) break; // so we can render the death
+    if (guesses == lives) break;
     cout << "Enter your guess (lowercase): ";
     cin >> guess;
-    poopoomagoo=w.update(guess);
-    if (poopoomagoo == 3) { // win condition
-      ifstream win(path+"win.txt");
-      string winArt[23];
-      cls();
-      for (int i = 0; i < 23; i++) {
-        getline(win, winArt[i]);
-        cout << winArt[i];
-        if (i == 8) cout << " " << name << "!" << string(19 - name.length(), ' ') << "\\ \\";
-        if (i == 22) cout << " " << w.getWord() << ".\n\n";
-        cout << endl;
-      }
-      win.close();
-      pause();
-      break;
+    poopoomagoo=w->update(guess);
+
+    switch (poopoomagoo) {
+      case 0:
+      case 2:
+        guesses++;
+        break;
+      case 3:
+        win(name, w->getWord(), path);
+        pause();
+        break;
+      case 4:
+        saveGame(name, difficulty, guesses, w->getWord(), w->getGuessed());
+        break;
     }
-    else if (poopoomagoo == 4) {
-      saveGame(name, difficulty, guesses, w.getWord(), w.getGuessed());
-    }
-    else if(poopoomagoo!=1)
-    {
-      guesses++;
-    }
+
+    if (poopoomagoo == 3 || poopoomagoo == 4) break;
   }
 
   if (guesses == lives) {
-    cout << string(21, ' ')  << name << "'s neck gave out.\n\n";
-    pause();
-    cout << string(21, ' ') << "The word was " << w.getWord() << ".";
+    die(name, w->getWord(), path);
     pause();
   }
+
+  // delete g;
+  // delete m;
+  // delete w;
+  if(CLEAR == "cls") { system("pause;"); }
 // }
   return 0;
 }
@@ -110,27 +107,97 @@ int mainMenu(string path, int height, string &name, int &difficulty) {
   cin >> choice;
   switch (choice) {
     case 1:
-      cout << "\n              What's your name? : ";
+      cout << "\n                What's your name? : ";
       cin >> name;
-      cout << "              Difficulty (1-3)? : ";
+      cout << "                Difficulty (1-3)? : ";
       cin >> difficulty;
+      if (difficulty < 1 || difficulty > 3) {
+        cout << "                Not an option you dink...\n              Easy mode it is!";
+        name = "Dink";
+        difficulty = 1;
+        pause();
+      }
       break;
     case 2:
-      cout << "\n              What's your name? : ";
+      cout << "\n                What's your name? : ";
       cin >> name;
       break;
     case 3:
       break;
     default:
-      cout << "\n              What's your name? : ";
+      cout << "\n                What's your name? : ";
       cin >> name;
-      cout << "\n              Choose difficulty (1-3): ";
+      cout << "\n                Choose difficulty (1-3): ";
       cin >> difficulty;
+      if (difficulty < 1 || difficulty > 3) {
+        cout << "                Not an option you dink...\n                Easy mode it is!";
+        name = "Dink";
+        difficulty = 1;
+        pause(); pause();
+      }
       choice = 1;
       break; }
 
   cls();
   return choice;
+}
+
+void die(string name, string word, string path) {
+  cout << endl << string(21, ' ')  << name << "'s neck gave out.\n\n";
+  pause();
+  cout << string(21, ' ') << "The word was " << word << ".\n";
+  pause();
+  ifstream die(path+"die.txt");
+  string dieArt[24];
+  time_t now = time(0);
+  char* tyme = ctime(&now);
+
+  cls();
+  for (int i = 0; i < 24; i++) {
+    getline(die, dieArt[i]);
+    cout << dieArt[i];
+    if (i == 9) {
+      cout << string(25 - name.length(), ' ');
+      for (int i = 0; i < name.length(); i++) {
+        if (name[i] > 96 && name[i] < 123) {
+          name[i] = name[i] - 32;
+        }
+        cout << name[i] << " ";
+      }
+      cout << string(23 - name.length(), ' ') << "<";
+    }
+    if (i == 12) {
+      for (int i = 4; i < 10; i++) {
+        cout << tyme[i];
+      }
+      cout << ", 2019|";
+    }
+    if (i == 16) {
+      cout << word;
+    }
+    cout << endl;
+  }
+  die.close();
+}
+
+void win(string name, string word, string path) {
+  ifstream win(path+"win.txt");
+  string winArt[21];
+  cls();
+  for (int i = 0; i < 21; i++) {
+    getline(win, winArt[i]);
+    cout << winArt[i];
+    if (i == 8) cout << " " << name << "!" << string(22 - name.length(), ' ') << "\\ \\";
+    if (i == 17) {
+      cout << string(15 - word.length(), ' ');
+      for (int i = 0; i < word.length(); i++) {
+        cout << word[i] << " ";
+      }
+      cout << string(15 - word.length(), ' ') << "_.' '._    | |";
+    }
+    cout << endl;
+  }
+  win.close();
 }
 
 void saveGame(string name, int difficulty, int guesses, string word, string guessed) {
