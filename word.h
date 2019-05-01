@@ -1,10 +1,9 @@
-#include <cstdlib>
 #include <ctime>
 #include <fstream>
 #include <iostream>
 #include <string>
 #include <vector>
-#include<algorithm>
+#include <algorithm>
 using namespace std;
 
 class Word {
