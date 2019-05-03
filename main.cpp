@@ -19,8 +19,7 @@ int main() {
   //        _____ File attributes _____
   string dictionary = "dict.txt", path = "stages/", gallowF = "hang.txt",
          gallowEndF = "hung.txt"; // file locations
-  int artHeight = 28;
-  int poopoomagoo;
+  int artHeight = 28, poopoomagoo;
 
   while (1) {
     //        ____ Player attributes ____
@@ -32,6 +31,14 @@ int main() {
       return 0;
     if (gameState == 2) { // load game
       ifstream data(name + ".txt");
+      while(!data) {
+        cls();
+        cout << string(3, '\n');
+        cout << string(16, ' ') << name << " doesn't have a saved game!\n";
+        cout << string(16, ' ') << "Try again: ";
+        cin >> name;
+        data.open(name + ".txt");
+      }
       data >> difficulty >> guesses >> word >> guessed;
       cls();
       cout << string(3, '\n') << string(16, ' ') << "Welcome back, " << name
