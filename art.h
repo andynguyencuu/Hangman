@@ -1,3 +1,4 @@
+#pragma once
 #include<iostream>
 #include<fstream>
 #include<sstream>
@@ -12,4 +13,5 @@ class Art {
     string getPath() { return path; }
     int getHeight() { return height; }
     virtual void draw(int line, int state) = 0;
+    virtual ~Art() {};
 };

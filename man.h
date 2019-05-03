@@ -1,3 +1,4 @@
+#pragma once
 #include<iostream>
 #include<string>
 #include<fstream>
@@ -12,7 +13,7 @@ class Man : public Art {
   public:
     Man(string p = "", int h = 0, int s = 0)
       : Art(p, h), lives(s) {
-        man = new string*[lives]; // level 1, stages/lives
+        man = new string*[lives]; // level 1, lives
         for (int i = 0; i < lives; i++) {
           man[i] = new string[getHeight()]; // level 2, lines of each man
         }
@@ -29,6 +30,10 @@ class Man : public Art {
     void draw(int line, int stage) {
       cout << man[stage][line];
     }
-
-    // needs destructor
+    ~Man() {
+      for (int i = 0; i < lives; i++) {
+        delete [] man[i];
+      }
+      delete [] man;
+    }
 };

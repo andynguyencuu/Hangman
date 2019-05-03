@@ -1,8 +1,3 @@
-#include<iostream>
-#include<string>
-#include<fstream>
-#include<ctime>
-
 #include"man.h"
 #include"word.h"
 #ifdef _WIN32
@@ -25,7 +20,7 @@ int main() {
   int artHeight = 28;
   int poopoomagoo;
 
-//while(1) {
+while(1) {
   //        ____ Player attributes ____
   string name = "", word = "", guessed = "";
   int difficulty, guesses = 0, lives = 9;
@@ -34,7 +29,10 @@ int main() {
   if (gameState == 3) return 0;
   if (gameState == 2) { // load game
     ifstream data(name+".txt");
-    data >> difficulty >> guesses >> word >> guessed; //welcome back screen?
+    data >> difficulty >> guesses >> word >> guessed;
+    cls();
+    cout << string(3, '\n') << string(16, ' ') << "Welcome back, " << name <<"!\n";
+    pause();
   }
 
   Art *g = new Hang(path,artHeight, gallowF, gallowEndF, lives);
@@ -58,8 +56,13 @@ while (1) {
       cout << endl;
     }
     if (guesses == lives) break;
-    cout << "Enter your guess (lowercase): ";
+    cout << "Enter your guess: ";
     cin >> guess;
+    for (int i = 0; i < guess.length(); i++) {
+      if (guess[i] > 64 && guess[i] < 91) { // if uppercase
+        guess[i] = guess[i] + 32; // lowercase
+      }
+    }
     poopoomagoo=w->update(guess);
 
     switch (poopoomagoo) {
@@ -69,7 +72,6 @@ while (1) {
         break;
       case 3:
         win(name, w->getWord(), path);
-        pause();
         break;
       case 4:
         saveGame(name, difficulty, guesses, w->getWord(), w->getGuessed());
@@ -81,14 +83,12 @@ while (1) {
 
   if (guesses == lives) {
     die(name, w->getWord(), path);
-    pause();
   }
 
-  // delete g;
-  // delete m;
-  // delete w;
-  if(CLEAR == "cls") { system("pause;"); }
-// }
+  delete g;
+  delete m;
+  delete w;
+}
   return 0;
 }
 
@@ -104,12 +104,13 @@ int mainMenu(string path, int height, string &name, int &difficulty) {
     if (i != height - 1) cout << endl;
   }
   menu.close();
+  cout << " ";
   cin >> choice;
   switch (choice) {
     case 1:
       cout << "\n                What's your name? : ";
       cin >> name;
-      cout << "                Difficulty (1-3)? : ";
+      cout << "                Difficulty (1 (Easy) - 3 (Hard))? : ";
       cin >> difficulty;
       if (difficulty < 1 || difficulty > 3) {
         cout << "                Not an option you dink...\n              Easy mode it is!";
@@ -127,7 +128,7 @@ int mainMenu(string path, int height, string &name, int &difficulty) {
     default:
       cout << "\n                What's your name? : ";
       cin >> name;
-      cout << "\n                Choose difficulty (1-3): ";
+      cout << "\n                Choose difficulty (1 (Easy) - 3 (Hard)): ";
       cin >> difficulty;
       if (difficulty < 1 || difficulty > 3) {
         cout << "                Not an option you dink...\n                Easy mode it is!";
@@ -151,7 +152,6 @@ void die(string name, string word, string path) {
   string dieArt[24];
   time_t now = time(0);
   char* tyme = ctime(&now);
-
   cls();
   for (int i = 0; i < 24; i++) {
     getline(die, dieArt[i]);
@@ -173,11 +173,16 @@ void die(string name, string word, string path) {
       cout << ", 2019|";
     }
     if (i == 16) {
-      cout << word;
+      cout << " " << word;
     }
     cout << endl;
   }
   die.close();
+  pause(), pause();
+  if (CLEAR == "cls") {
+    cout << "\nPress any key to return to main menu!";
+    system("pause >nul");
+  }
 }
 
 void win(string name, string word, string path) {
@@ -198,6 +203,11 @@ void win(string name, string word, string path) {
     cout << endl;
   }
   win.close();
+  pause(), pause();
+  if (CLEAR == "cls") {
+    cout << "\nPress any key to return to main menu!";
+    system("pause >nul");
+  }
 }
 
 void saveGame(string name, int difficulty, int guesses, string word, string guessed) {
@@ -213,9 +223,9 @@ void saveGame(string name, int difficulty, int guesses, string word, string gues
 void pause() {
   //pause for 2 seconds, go back
   if (CLEAR == "cls") {
-    system("timeout /t 2 /nobreak >nul");
+    system("timeout /t 3 /nobreak >nul");
   }
   else {
-    system("ping -t 2 google.com >nul & sleep 2 >nul");
+    system("ping -t 3 google.com >nul & sleep 3 >nul");
   }
 }

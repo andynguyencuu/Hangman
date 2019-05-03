@@ -77,7 +77,7 @@ public:
   }
 
   int update(string guess) {
-    change = 0;
+    change = 0; //incorrect guess
     if (guess == "!") {
       return 4; //save
     }
@@ -97,18 +97,8 @@ public:
     if ((guessed == word) || (guess == word)) {
       return 3; //correct word guess or word completed
     }
-    if ((guessed == word) || (guess == word)) {
-      return 3; //correct word guess or word completed
-    }
-    for (int i = 0; i < word.length(); i++) {
-      if (word[i] == guess[0]) {
-        guessed[i] = word[i];
-        change = 1; //correct guess
-      }
-    }
-    return change; //incorrect guess
+    return change;
   }
   int getChange() { return change; }
-
-  //needs destructor
+  ~Word() {}
 };

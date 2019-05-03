@@ -1,3 +1,4 @@
+#pragma once
 #include<iostream>
 #include<string>
 #include<fstream>
@@ -24,5 +25,8 @@ class Hang : public Art {
       if (stage < lives - 1) { cout << hang[line]; } // game not won
       else { cout << hung[line]; }
     }
-    // needs destructor
+    ~Hang() {
+      delete [] hang;
+      delete [] hung;
+    }
 };
